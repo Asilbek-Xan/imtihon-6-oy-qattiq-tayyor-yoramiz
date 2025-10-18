@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="cupcake">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Details</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center p-6">
+
+  <div id="carCard" class="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-6 transition transform hover:scale-[1.01]">
+    <h1 id="name" class="text-3xl font-bold text-gray-800 mb-3">Yuklanmoqda...</h1>
+    <p id="description" class="text-gray-600 mb-4"></p>
+
+    <div id="info" class="grid grid-cols-2 gap-4 text-gray-700 text-sm"></div>
+
+    <div class="mt-6 flex justify-between items-center">
+      <a href="../index.html" class="bg-slate-800 text-white px-4 py-2 rounded-lg hover:bg-slate-700 transition">
+        ⬅ Bosh sahifa
+      </a>
+      <div id="colorPreview" class="w-10 h-10 rounded-full border"></div>
+    </div>
+  </div>
+
+  <script type="module" src="../js/pages/details.js"></script>
+</body>
+</html>
