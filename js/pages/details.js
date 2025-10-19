@@ -43,11 +43,18 @@ function ui(data) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  const id = new URLSearchParams(location.search).get("id");
-  getById(id)
-    .then((res) => ui(res))
-    .catch(() => {
-      elTitle.innerText = "Xatolik!";
-      elDesc.innerText = "Ma'lumotni olishda muammo bo‘ldi.";
+  elSkeletonLoader.classList.remove("hidden");
+
+  getAll(`?limit=${limit}&skip=${skip}`)
+    .then((res) => {
+      backendData = res;
+      changeLocalData(res.data);
+      pagination(res.total, res.limit, res.skip);
+      ui(res.data);
+    })
+    .catch(() => showToast("Ma'lumot yuklashda xatolik"))
+    .finally(() => {
+      elSkeletonLoader.classList.add("hidden");
+      elLoader.classList.add("hidden");
     });
 });

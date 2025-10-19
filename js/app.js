@@ -5,12 +5,10 @@ import { getAll, deleteElement, editElement as editElementServer } from "./reque
 import { showToast } from "./toast.js";
 import { pagination, ui } from "./ui.js";
 
-// Elementlar
-
 const limit = 12;
 let skip = 0;
 
-
+// Elements
 const elEditModal = document.getElementById("editModal");
 const elOfflinePage = document.getElementById("offlinePage");
 const elFilterTypeSelect = document.getElementById("filterTypeSelect");
@@ -19,23 +17,23 @@ const elSearchInput = document.getElementById("searchInput");
 const elLoader = document.getElementById("loader");
 const elContainer = document.getElementById("container");
 const elSkeletonLoader = document.getElementById("skeletonLoader");
-const elError = document.getElementById("error");
 const elEditForm = document.getElementById("editForm");
+const elPagination = document.getElementById("pagination");
+const elClearBtn = document.getElementById("clearBtn");
 
-// O‘zgaruvchilar
 let backendData = null;
 let worker = new Worker("./worker.js");
 let filterKey = null;
 let filterValue = null;
 let editedElementId = null;
 
-// Ovozlar
+// Sounds
 const offlineSound = new Audio("./sounds/offline.mp3");
 const onlineSound = new Audio("./sounds/online.mp3");
-const clickSound = new Audio("./sounds/click.mp3");
+const leftSound = new Audio("./sounds/left-click.mp3");
+const rightSound = new Audio("./sounds/right-click.mp3");
 
-
-// Debounce
+// Debounce helper
 function debounce(fn, wait = 300) {
   let t;
   return (...args) => {
@@ -44,250 +42,314 @@ function debounce(fn, wait = 300) {
   };
 }
 
-// Filter Type
-elFilterTypeSelect.addEventListener("change", (evt) => {
-  const value = evt.target.value;
-  filterKey = value;
-  if (backendData) {
-    elLoader.classList.remove("hidden");
-    worker.postMessage({
-      functionName: "filterByType",
-      params: [backendData.data, value],
-    });
-  }
-});
-
-// Filter Value
-elFilterValueSelect.addEventListener("change", (evt) => {
-  const value = evt.target.value;
-  filterValue = value;
-  elContainer.innerHTML = "";
-  if (filterKey && filterValue) {
-    elLoader.classList.remove("hidden");
-    getAll(`?${filterKey}=${filterValue}`)
-      .then((res) => ui(res.data))
-      .catch((error) => showToast(error.message))
-      .finally(() => elLoader.classList.add("hidden"));
-  }
-});
-
-// Search
-const liveSearch = debounce((value) => {
-  if (!backendData) return;
-  if (value === "") {
-    ui(backendData.data);
-    return;
-  }
+// ------- Helper: load page data with optional query --------
+function loadData({ limitParam = limit, skipParam = skip, key = null, value = null } = {}) {
   elLoader.classList.remove("hidden");
-  worker.postMessage({
-    functionName: "search",
-    params: [backendData.data, value],
-  });
-}, 250);
+  let url = `?limit=${limitParam}&skip=${skipParam}`;
+  if (key && value) url = `?${key}=${encodeURIComponent(value)}&limit=${limitParam}&skip=${skipParam}`;
 
-elSearchInput.addEventListener("input", (evt) => {
-  const value = evt.target.value.trim();
-  liveSearch(value);
+  getAll(url)
+    .then((res) => {
+      if (!res || !res.data) {
+        showToast("❌ Serverdan to‘g‘ri javob kelmadi");
+        return;
+      }
+      backendData = res;
+      changeLocalData(res.data);
+      ui(res.data);
+      pagination(res.total, res.limit, res.skip);
+    })
+    .catch((err) => {
+      // Use showToast for user-visible error
+      showToast(err?.message || "❌ Ma'lumotni yuklashda xatolik yuz berdi");
+    })
+    .finally(() => {
+      elSkeletonLoader.classList.add("hidden");
+      elLoader.classList.add("hidden");
+    });
+}
+
+// ------- Initial load on DOMContentLoaded -------
+window.addEventListener("DOMContentLoaded", () => {
+  elSkeletonLoader.classList.remove("hidden");
+  if (!navigator.onLine) {
+    elOfflinePage.classList.remove("hidden");
+    showToast("⚠️ Internet yo‘q — offline rejimda ishlayapsiz");
+  }
+
+  // initial load
+  loadData();
+
+  // hide clear btn by default
+  if (elClearBtn) elClearBtn.classList.add("hidden");
 });
 
-// Worker
+// ------- Worker message handling (filter values + search) -------
 worker.addEventListener("message", (evt) => {
   const response = evt.data;
   elLoader.classList.add("hidden");
 
   if (response.target === "filterByType") {
     elFilterValueSelect.innerHTML = "";
-    if (!filterKey) {
-      elFilterValueSelect.classList.add("hidden");
-      return;
-    }
     elFilterValueSelect.classList.remove("hidden");
+
     const option = document.createElement("option");
-    option.selected = true;
-    option.disabled = true;
     option.textContent = "All";
+    option.disabled = true;
+    option.selected = true;
     elFilterValueSelect.appendChild(option);
-    response.result.forEach((element) => {
+
+    response.result.forEach((item) => {
       const opt = document.createElement("option");
-      opt.textContent = element;
-      opt.value = element;
+      opt.value = item;
+      opt.textContent = item;
       elFilterValueSelect.appendChild(opt);
     });
-  } else if (response.target === "search") {
-    if (!response.result.length) {
+
+    showToast("✅ Filter qiymatlari tayyor");
+  }
+
+  if (response.target === "search") {
+    elLoader.classList.add("hidden");
+    if (!response.result || response.result.length === 0) {
       elContainer.innerHTML = "";
-      showToast("No data found");
+      showToast("⚠️ Hech narsa topilmadi");
     } else {
       ui(response.result);
+      showToast(`✅ ${response.result.length} ta natija topildi`);
     }
   }
 });
 
-// Offline/Online
-window.addEventListener("online", () => {
-  elOfflinePage.classList.add("hidden");
-  onlineSound.play();
+// ------- Filter type select -------
+elFilterTypeSelect.addEventListener("change", (evt) => {
+  filterKey = evt.target.value || null;
+  if (!backendData) {
+    showToast("❌ Server ma'lumotlari yuklanmagan");
+    return;
+  }
+
+  // show clear button
+  if (elClearBtn) elClearBtn.classList.remove("hidden");
+
+  elLoader.classList.remove("hidden");
+  worker.postMessage({
+    functionName: "filterByType",
+    params: [backendData.data, filterKey],
+  });
 });
 
-window.addEventListener("offline", () => {
-  elOfflinePage.classList.remove("hidden");
-  offlineSound.play();
+// ------- Filter value select -------
+elFilterValueSelect.addEventListener("change", (evt) => {
+  filterValue = evt.target.value || null;
+  skip = 0;
+  if (!filterKey || !filterValue) {
+    showToast("❗ Filter tanlangandan keyin qiymatni tanlang");
+    return;
+  }
+
+  // load with filter
+  loadData({ limitParam: limit, skipParam: skip, key: filterKey, value: filterValue });
+  showToast(`🔎 Filtr qo‘llandi: ${filterKey} = ${filterValue}`);
 });
 
-// Shortcuts
-window.addEventListener("keydown", (evt) => {
-  if ((evt.ctrlKey || evt.metaKey) && evt.key.toLowerCase() === "k") {
-    evt.preventDefault();
-    elSearchInput.focus();
+// ------- Search (live, debounced) -------
+const liveSearch = debounce((value) => {
+  if (!backendData) return;
+  if (!value) {
+    ui(backendData.data);
+    showToast("🔄 Qidiruv tozalandi");
+    return;
+  }
+
+  elLoader.classList.remove("hidden");
+  worker.postMessage({
+    functionName: "search",
+    params: [backendData.data, value],
+  });
+}, 300);
+
+elSearchInput.addEventListener("input", (evt) => {
+  const value = evt.target.value.trim();
+  liveSearch(value);
+
+  // show clear button when typing
+  if (elClearBtn) {
+    if (value.length > 0) elClearBtn.classList.remove("hidden");
+    else if (!filterKey && !filterValue) elClearBtn.classList.add("hidden");
   }
 });
 
-// Loader
-window.addEventListener("DOMContentLoaded", () => {
-  elSkeletonLoader.classList.remove("hidden");
+// ------- Clear filters/search -------
+if (elClearBtn) {
+  elClearBtn.addEventListener("click", () => {
+    filterKey = null;
+    filterValue = null;
+    skip = 0;
+    elFilterTypeSelect.value = "";
+    elFilterValueSelect.innerHTML = `<option disabled selected>Nimasidan topish kerak?</option>`;
+    elFilterValueSelect.classList.add("hidden");
+    elSearchInput.value = "";
+    elClearBtn.classList.add("hidden");
 
-  if (!window.navigator.onLine) elOfflinePage.classList.remove("hidden");
-  else elOfflinePage.classList.add("hidden");
-
-
-  // ASOSIY HOZIRCHA
-  getAll(`?limit=${limit}&skip=${skip}`)
-  .then((res) => {
-      elLoader.classList.remove("hidden");
-      backendData = res;
-      pagination(backendData.total, backendData.limit, backendData.skip)
-      changeLocalData(backendData.data);
-
-      ui(backendData.data);
-    })
-    .catch((error) => showToast(error.message))
-    .finally(() => {
-      elSkeletonLoader.classList.add("hidden")
-      elLoader.classList.remove("hidden");
-    });
-
-
-  getAll()
-    .then((res) => {
-      backendData = res;
-      changeLocalData(backendData.data);
-      ui(backendData.data);
-    })
-    .catch((error) => showToast(error.message))
-    .finally(() => elLoader.classList.add("hidden"));
-});
-
-// Init
-function init() {
-  elLoader.classList.remove("hidden");
-  fetch("https://json-api.uz/api/project/fn43/cars")
-    .then((res) => res.json())
-    .then((res) => ui(res.data))
-    .catch(() => {
-      elError.classList.remove("hidden")
-      elPagination.classList.add("hidden")
-})
-    .finally(() => elSkeletonLoader.classList.add("hidden"));
+    loadData();
+    showToast("🔁 Filterlar va qidiruv tozalandi");
+  });
 }
-init();
 
-// CRUD
+// ------- CRUD click handling on cards (delegation) -------
 elContainer.addEventListener("click", (evt) => {
   const target = evt.target;
 
-  // Edit
-  if (target.classList.contains("js-edit")) {
-    if (checkAuth()) {
-      editedElementId = target.id;
-      elEditModal.showModal();
-      const foundElement = localData.find((el) => el.id == target.id);
-      elEditForm.name.value = foundElement.name;
-      elEditForm.description.value = foundElement.description;
-    } else {
-      window.location.href = "/pages/login.html";
-      alert("Tahrirlash yoki O'chirish uchun ro'yxatdan o'tishingiz kerak ⚠️");
+  // If clicking inside button's svg, find the button parent with class
+  const btn = target.closest("button, a");
+  if (!btn) return;
+
+  // Edit button
+  if (btn.classList.contains("js-edit")) {
+    if (!checkAuth()) {
+      showToast("⚠️ Tahrirlash uchun avval kirish qiling");
+      return (location.href = "/pages/login.html");
     }
-  }
 
-  // Delete
-  if (target.classList.contains("js-delete")) {
-    if (checkAuth() && confirm("Rostdan ham o'chirish?")) {
-      elLoader.classList.remove("hidden");
-      deleteElement(target.id)
-        .then((id) => {
-          deleteElementLocal(id);
-          showToast("Mashinani muvaffaqiyatli o‘chiridingiz ✅");
-        })
-        .catch(() => {
-          showToast("O‘chirishda xatolik yuz berdi ❌");
-        })
-        .finally(() => {
-          elLoader.classList.add("hidden");
-        });
-    } else {
-      window.location.href = "/pages/login.html";
-      alert("Tahrirlash yoki O'chirish uchun ro'yxatdan o'tishingiz kerak ⚠️");
+    editedElementId = btn.id;
+    const foundElement = localData.find((el) => el.id == editedElementId);
+    if (!foundElement) {
+      showToast("❌ Tahrirlash uchun element topilmadi");
+      return;
     }
+    // open modal and fill
+    elEditModal.showModal();
+    elEditForm.name.value = foundElement.name || "";
+    elEditForm.description.value = foundElement.description || "";
   }
 
-  // Info
-  // Info
-if (target.classList.contains("js-info")) {
-  const id = target.id || target.getAttribute("data-id");
-  if (id) {
-    window.location.href = `/pages/details.html?id=${id}`;
-  }
-}
+  // Delete button
+  if (btn.classList.contains("js-delete")) {
+    if (!checkAuth()) {
+      showToast("⚠️ O'chirish uchun avval kirish qiling");
+      return (location.href = "/pages/login.html");
+    }
 
-});
-
-// Edit form
-elEditForm.addEventListener("submit", (evt) => {
-  evt.preventDefault();
-  const formData = new FormData(elEditForm);
-  const result = {};
-  formData.forEach((value, key) => (result[key] = value.trim()));
-
-  if (editedElementId) {
-    result.id = editedElementId;
-
-    editElementServer(result)
-      .then((res) => {
-        editElementLocal(res);
-        showToast("Ma'lumot tahrirlandi ✅");
-      })
-      .catch(() => {
-        showToast("Tahrirlashda xatolik ❌");
-      })
-      .finally(() => {
-        editedElementId = null;
-        elEditModal.close();
-
-      });
-  }
-});
-
-const elPagination = document.getElementById("pagination");
-
-elPagination.addEventListener("click", (evt) => {
-  if (evt.target.classList.contains("js-page")) {
-    skip = evt.target.dataset.skip;
+    const id = btn.id;
+    if (!confirm("Rostdan o‘chirmoqchimisiz?")) return;
 
     elLoader.classList.remove("hidden");
-
-    getAll(`?limit=${limit}&skip=${skip}`)
-      .then((res) => {
-        pagination(res.total, res.limit, res.skip);
-        ui(res.data);
+    deleteElement(id)
+      .then((deletedId) => {
+        deleteElementLocal(deletedId);
+        showToast("✅ Ma'lumot muvaffaqiyatli o‘chirildi");
+        // reload current page
+        loadData({ limitParam: limit, skipParam: skip, key: filterKey, value: filterValue });
       })
-      .catch((error) => showToast(error.message))
-      .finally(() => elLoader.classList.add("hidden"));
+      .catch((err) => {
+        showToast(err?.message || "❌ O'chirishda xatolik yuz berdi");
+      })
+      .finally(() => {
+        elLoader.classList.add("hidden");
+      });
+  }
+
+  // Info (details)
+  if (btn.classList.contains("js-info")) {
+    const id = btn.id || btn.getAttribute("data-id");
+    if (element.id) {
+      showToast("❗ Element ID mavjud emas");
+      return;
+    }
+    location.href = `/pages/details.html?id=${id}`;
+  }
+});
+
+// ------- Edit form submit -------
+elEditForm.addEventListener("submit", (evt) => {
+  evt.preventDefault();
+  if (!editedElementId) {
+    showToast("❗ Tahrirlash uchun element tanlanmagan");
+    return;
+  }
+
+  const formData = new FormData(elEditForm);
+  const payload = {};
+  formData.forEach((v, k) => (payload[k] = v.trim()));
+  payload.id = editedElementId;
+
+  elLoader.classList.remove("hidden");
+  editElementServer(payload)
+    .then((res) => {
+      editElementLocal(res);
+      showToast("✅ Ma'lumot muvaffaqiyatli yangilandi");
+      loadData({ limitParam: limit, skipParam: skip, key: filterKey, value: filterValue });
+    })
+    .catch((err) => {
+      showToast(err?.message || "❌ Tahrirlashda xatolik");
+    })
+    .finally(() => {
+      elLoader.classList.add("hidden");
+      editedElementId = null;
+      try { elEditModal.close(); } catch (e) {}
+    });
+});
+
+// ------- Pagination click -------
+elPagination.addEventListener("click", (evt) => {
+  const target = evt.target;
+  if (!target.classList.contains("js-page")) return;
+
+  let newSkip = Number(target.dataset.skip) || 0;
+  if (!backendData || !backendData.total) {
+    showToast("❌ Pagination uchun ma'lumot yo'q");
+    return;
+  }
+
+  const totalPages = Math.ceil(backendData.total / limit);
+  const pageIndex = Math.floor(newSkip / limit);
+
+  if (pageIndex < 0) newSkip = 0;
+  if (pageIndex >= totalPages) newSkip = (totalPages - 1) * limit;
+
+  skip = newSkip;
+  loadData({ limitParam: limit, skipParam: skip, key: filterKey, value: filterValue });
+  showToast(`📄 ${pageIndex + 1} - sahifa yuklanmoqda`);
+});
+
+// ------- Online / Offline -------
+window.addEventListener("online", () => {
+  elOfflinePage.classList.add("hidden");
+  onlineSound.play();
+  showToast("✅ Internet ulanish tiklandi");
+});
+window.addEventListener("offline", () => {
+  elOfflinePage.classList.remove("hidden");
+  offlineSound.play();
+  showToast("⚠️ Internet uzildi — offline rejim");
+});
+
+// ------- Mouse click sounds -------
+document.addEventListener("mousedown", (event) => {
+  if (event.button === 0) {
+    leftSound.currentTime = 0;
+    leftSound.play();
+  } else if (event.button === 2) {
+    rightSound.currentTime = 0;
+    rightSound.play();
+  }
+});
+document.addEventListener("contextmenu", (event) => {
+  // prevent default context menu if you want right-click sound only
+  event.preventDefault();
+});
+
+// ------- Extra: ensure filterValue tracked when user picks value (defensive) -------
+elFilterValueSelect.addEventListener("input", (evt) => {
+  filterValue = evt.target.value || null;
+  if (filterKey && filterValue) {
+    elClearBtn?.classList.remove("hidden");
   }
 });
 
 
+// ------- End of file -------
 
-window.addEventListener("click", () => {
-  clickSound.currentTime = 0; 
-  clickSound.play();
-});
+
+

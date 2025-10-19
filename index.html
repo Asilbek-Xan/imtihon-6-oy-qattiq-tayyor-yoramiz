@@ -12,6 +12,8 @@
     <title>Cars</title>
   </head>
 
+
+
   <body class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-slate-100 text-gray-800">
     <div
       id="offlinePage"
@@ -27,141 +29,415 @@
       <div class="container mx-auto px-5">
         <div class="flex flex-wrap items-center gap-4 pb-8 justify-between">
           <div class="flex gap-4">
-            <select class="select select-bordered select-primary px-10" id="filterTypeSelect">
+            <select class="select select-bordered select-primary px-10 select select-bordered transition-all duration-300 ease-in-out focus:scale-105 focus:shadow-lg" id="filterTypeSelect">
               <option disabled selected>Nimasidan topish kerak?</option>
               <option value="category">Turkum</option>
               <option value="year">Yil</option>
               <option value="country">Davlat</option>
-              <option value="max_speed">Tezlik</option>
+              <option value="maxSpeed">Tezlik</option>
+              <option value="fuelType">Yoqilg'i</option>
             </select>
 
             <select class="select select-bordered select-primary hidden px-4" id="filterValueSelect">
               <option disabled selected class="max-w-10">All</option>
             </select>
+
+
+
+
+
+
+            <button id="clearBtn" class="hidden btn btn-outline btn-error">Filterlarni tozalash</button>
+
+
+
+
+
+
+
+
           </div>
 
 
 
+
+
           <label class="input flex items-center gap-2">
-            <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <g
-                stroke-linejoin="round"
-                stroke-linecap="round"
-                stroke-width="2.5"
-                fill="none"
-                stroke="currentColor"
-              >
-                <circle cx="11" cy="11" r="5"></circle>
-                <path d="m21 21-4.3-4.3"></path>
-              </g>
-            </svg>
-            <input type="search" class="grow" id="searchInput" placeholder="Search" />
-            <kbd class="kbd kbd-sm">⌘</kbd>
-            <kbd class="kbd kbd-sm">K</kbd>
-          </label>
-        </div>
+                   <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                     <g
+                       stroke-linejoin="round"
+                       stroke-linecap="round"
+                       stroke-width="2.5"
+                       fill="none"
+                       stroke="currentColor"
+                     >
+                       <circle cx="11" cy="11" r="5"></circle>
+                       <path d="m21 21-4.3-4.3"></path>
+                     </g>
+                   </svg>
+                   <input type="search" class="grow" id="searchInput" placeholder="Search" />
+                   <kbd class="kbd kbd-sm">⌘</kbd>
+                   <kbd class="kbd kbd-sm">K</kbd>
+                 </label>
 
 
 
-
-        <h3 id="loader" class="text-center text-indigo-600 mb-10 text-lg font-medium animate-pulse hidden">
+          <h3 id="loader" class="text-center text-indigo-600 mb-10 text-lg font-medium animate-pulse hidden">
           Yuklanmoqda . . .
         </h3>
 
 
 
-        <div id="skeletonLoader" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-          <div class="card bg-base-100 shadow-sm">
-            <div class="card-body">
-              <div class="skeleton h-6 mb-3"></div>
-              <div class="skeleton h-3 mb-2"></div>
-              <div class="skeleton h-3 mb-2"></div>
-            </div>
-          </div>
-          <div class="card bg-base-100 shadow-sm">
-            <div class="card-body">
-              <div class="skeleton h-6 mb-3"></div>
-              <div class="skeleton h-3 mb-2"></div>
-              <div class="skeleton h-3 mb-2"></div>
-            </div>
-          </div>
-          <div class="card bg-base-100 shadow-sm">
-            <div class="card-body">
-              <div class="skeleton h-6 mb-3"></div>
-              <div class="skeleton h-3 mb-2"></div>
-              <div class="skeleton h-3 mb-2"></div>
-            </div>
-          </div>
-          <div class="card bg-base-100 shadow-sm">
-            <div class="card-body">
-              <div class="skeleton h-6 mb-3"></div>
-              <div class="skeleton h-3 mb-2"></div>
-              <div class="skeleton h-3 mb-2"></div>
-            </div>
-          </div>
-          <div class="card bg-base-100 shadow-sm">
-            <div class="card-body">
-              <div class="skeleton h-6 mb-3"></div>
-              <div class="skeleton h-3 mb-2"></div>
-              <div class="skeleton h-3 mb-2"></div>
-            </div>
-          </div>
-          <div class="card bg-base-100 shadow-sm">
-            <div class="card-body">
-              <div class="skeleton h-6 mb-3"></div>
-              <div class="skeleton h-3 mb-2"></div>
-              <div class="skeleton h-3 mb-2"></div>
-            </div>
-          </div>
-          <div class="card bg-base-100 shadow-sm">
-            <div class="card-body">
-              <div class="skeleton h-6 mb-3"></div>
-              <div class="skeleton h-3 mb-2"></div>
-              <div class="skeleton h-3 mb-2"></div>
-            </div>
-          </div>
-          <div class="card bg-base-100 shadow-sm">
-            <div class="card-body">
-              <div class="skeleton h-6 mb-3"></div>
-              <div class="skeleton h-3 mb-2"></div>
-              <div class="skeleton h-3 mb-2"></div>
-            </div>
-          </div>
-          <div class="card bg-base-100 shadow-sm">
-            <div class="card-body">
-              <div class="skeleton h-6 mb-3"></div>
-              <div class="skeleton h-3 mb-2"></div>
-              <div class="skeleton h-3 mb-2"></div>
-            </div>
-          </div>
-          <div class="card bg-base-100 shadow-sm">
-            <div class="card-body">
-              <div class="skeleton h-6 mb-3"></div>
-              <div class="skeleton h-3 mb-2"></div>
-              <div class="skeleton h-3 mb-2"></div>
-            </div>
-          </div>
-          <div class="card bg-base-100 shadow-sm">
-            <div class="card-body">
-              <div class="skeleton h-6 mb-3"></div>
-              <div class="skeleton h-3 mb-2"></div>
-              <div class="skeleton h-3 mb-2"></div>
-            </div>
-          </div>
-          <div class="card bg-base-100 shadow-sm">
-            <div class="card-body">
-              <div class="skeleton h-6 mb-3"></div>
-              <div class="skeleton h-3 mb-2"></div>
-              <div class="skeleton h-3 mb-2"></div>
-            </div>
-          </div>
-        </div>
+  <h3 id="loader" class="text-center text-indigo-600 mb-10 text-lg font-medium animate-pulse hidden">
+  Yuklanmoqda . . .
+</h3>
+
+<div id="skeletonLoader" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+  <!-- Skeleton Card -->
+  <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+    <div class="card bg-base-100 shadow-sm animate-pulse">
+    <div class="card-body">
+      <div class="skeleton h-6 w-3/4 mb-4"></div>
+      <div class="skeleton h-4 w-full mb-2"></div>
+      <div class="skeleton h-4 w-5/6 mb-2"></div>
+      <div class="skeleton h-4 w-2/3"></div>
+      <div class="flex justify-end mt-4 gap-2">
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+        <div class="skeleton h-8 w-16 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
 
         <div id="container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
       </div>
     </section>
 
-    <!-- Open the modal using ID.showModal() method -->
 <dialog id="editModal" class="modal">
   <div class="modal-box">
     <h3 class="text-lg font-bold"></h3>
@@ -181,6 +457,22 @@
     </div>
   </div>
 </dialog>
+
+
+<dialog id="deleteModal" class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold text-red-500">Rostdan o‘chirmoqchimisiz?</h3>
+    <p class="py-2">Bu amalni qaytarib bo‘lmaydi!</p>
+
+    <div class="modal-action">
+      <button class="btn" onclick="closeDeleteModal()">Bekor qilish</button>
+      <button class="btn btn-error" id="confirmDeleteBtn">Ha, o‘chirish</button>
+    </div>
+  </div>
+</dialog>
+
+
+
 
     <template id="cardTemplate">
       <div
