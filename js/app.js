@@ -32,6 +32,8 @@ let editedElementId = null;
 // Ovozlar
 const offlineSound = new Audio("./sounds/offline.mp3");
 const onlineSound = new Audio("./sounds/online.mp3");
+const clickSound = new Audio("./sounds/click.mp3");
+
 
 // Debounce
 function debounce(fn, wait = 300) {
@@ -181,7 +183,10 @@ function init() {
   fetch("https://json-api.uz/api/project/fn43/cars")
     .then((res) => res.json())
     .then((res) => ui(res.data))
-    .catch(() => elError.classList.remove("hidden"))
+    .catch(() => {
+      elError.classList.remove("hidden")
+      elPagination.classList.add("hidden")
+})
     .finally(() => elSkeletonLoader.classList.add("hidden"));
 }
 init();
@@ -226,8 +231,14 @@ elContainer.addEventListener("click", (evt) => {
   }
 
   // Info
-  if (target.classList.contains("js-info")) {
+  // Info
+if (target.classList.contains("js-info")) {
+  const id = target.id || target.getAttribute("data-id");
+  if (id) {
+    window.location.href = `/pages/details.html?id=${id}`;
   }
+}
+
 });
 
 // Edit form
@@ -256,25 +267,27 @@ elEditForm.addEventListener("submit", (evt) => {
   }
 });
 
-const elPagination = document.getElementById("pagination")
-
+const elPagination = document.getElementById("pagination");
 
 elPagination.addEventListener("click", (evt) => {
-  if(evt.target.classList.contains("js-page")){
-skip = evt.target.dataset.skip;
+  if (evt.target.classList.contains("js-page")) {
+    skip = evt.target.dataset.skip;
 
-elLoader.classList.remove("hidden");
-getAll(`?limit=${limit}&skip=${skip}`)
-.then((res) => {
+    elLoader.classList.remove("hidden");
 
-  pagination(res.total, res.limit, res.skip)
-
-  ui(res.data);
-    })
-    .catch((error) => showToast(error.message))
-    .finally(() => elLoader.classList.add("hidden"));;
-
-
-
+    getAll(`?limit=${limit}&skip=${skip}`)
+      .then((res) => {
+        pagination(res.total, res.limit, res.skip);
+        ui(res.data);
+      })
+      .catch((error) => showToast(error.message))
+      .finally(() => elLoader.classList.add("hidden"));
   }
-})
+});
+
+
+
+window.addEventListener("click", () => {
+  clickSound.currentTime = 0; 
+  clickSound.play();
+});

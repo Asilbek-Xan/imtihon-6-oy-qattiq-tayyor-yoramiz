@@ -3,6 +3,7 @@ const elDesc = document.getElementById("description");
 const elInfo = document.getElementById("info");
 const elColor = document.getElementById("colorPreview");
 
+
 async function getById(id) {
   document.title = "Yuklanmoqda...";
   try {

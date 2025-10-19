@@ -10,7 +10,7 @@
       const elDeleteBtn = clone.querySelector(".js-delete");
 
       // ID
-      elInfoBtn.href =  `/pages/details.html?id={id}` ;
+      elInfoBtn.href =  `/pages/details.html?id=${element.id}` ;
       elEditBtn.id = element.id;
       elDeleteBtn.id = element.id;
 
