@@ -6,41 +6,104 @@
     <title>Login Sahifasi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <style>
+        .theme-transition {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 flex items-center justify-center min-h-screen p-4">
+<body class="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center min-h-screen p-4 theme-transition">
 
-<div class="w-full max-w-sm p-8 bg-white rounded-2xl shadow-xl border border-amber-100">
+<!-- Theme Toggle Button -->
+<div class="fixed top-6 right-6 z-10">
+    <button id="themeToggle" class="bg-white dark:bg-gray-800 shadow-lg rounded-full p-3 border border-amber-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
+        <i id="sunIcon" class="fas fa-sun text-amber-500 text-lg"></i>
+        <i id="moonIcon" class="fas fa-moon text-blue-400 text-lg hidden"></i>
+    </button>
+</div>
+
+<div class="w-full max-w-sm p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-amber-100 dark:border-gray-700 theme-transition">
     <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full mb-4 shadow-md">
+        <div class="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-amber-400 to-amber-600 dark:from-amber-500 dark:to-amber-700 rounded-full mb-4 shadow-md theme-transition">
             <i class="fas fa-user text-white text-xl"></i>
         </div>
-        <h1 class="text-3xl font-bold text-gray-800">Login Sahifasi</h1>
-        <p class="text-gray-600 mt-2 text-sm">Ma'lumotlaringizni kiriting</p>
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white theme-transition">Login Sahifasi</h1>
+        <p class="text-gray-600 dark:text-gray-300 mt-2 text-sm theme-transition">Ma'lumotlaringizni kiriting</p>
     </div>
 
     <form id="form" class="flex flex-col gap-5">
         <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <i class="fas fa-user text-amber-500"></i>
+                <i class="fas fa-user text-amber-500 dark:text-amber-400 theme-transition"></i>
             </div>
             <input type="text" name="username" id="username" placeholder="Ismingiz kiriting:"
-                   class="w-full pl-10 pr-4 py-3 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all duration-300 text-gray-800 font-medium bg-amber-50/30">
+                   class="w-full pl-10 pr-4 py-3 border border-amber-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 dark:focus:ring-amber-500 focus:border-amber-400 dark:focus:border-amber-500 transition-all duration-300 text-gray-800 dark:text-white dark:bg-gray-700 font-medium bg-amber-50/30 dark:bg-gray-600/30 placeholder-gray-500 dark:placeholder-gray-400 theme-transition">
         </div>
 
         <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <i class="fas fa-lock text-amber-500"></i>
+                <i class="fas fa-lock text-amber-500 dark:text-amber-400 theme-transition"></i>
             </div>
             <input type="password" name="password" id="password" placeholder="Maxfiy so'zni kiriting:"
-                   class="w-full pl-10 pr-4 py-3 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all duration-300 text-gray-800 font-medium bg-amber-50/30">
+                   class="w-full pl-10 pr-4 py-3 border border-amber-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 dark:focus:ring-amber-500 focus:border-amber-400 dark:focus:border-amber-500 transition-all duration-300 text-gray-800 dark:text-white dark:bg-gray-700 font-medium bg-amber-50/30 dark:bg-gray-600/30 placeholder-gray-500 dark:placeholder-gray-400 theme-transition">
         </div>
 
         <button type="submit" id="submitBtn"
-                class="bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg shadow-md mt-2">
+                class="bg-gradient-to-r from-amber-400 to-amber-500 dark:from-amber-500 dark:to-amber-600 hover:from-amber-500 hover:to-amber-600 dark:hover:from-amber-600 dark:hover:to-amber-700 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg shadow-md mt-2 theme-transition">
             Tasdiqlash
         </button>
     </form>
+
+    <!-- Additional Info -->
+    <div class="mt-6 text-center">
+        <p class="text-sm text-gray-500 dark:text-gray-400 theme-transition">
+            Hisobingiz yo'qmi?
+            <a href="./register.html" class="text-amber-500 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 font-medium transition-colors duration-200">
+                Ro'yxatdan o'ting
+            </a>
+        </p>
+    </div>
 </div>
+
+<script>
+    // Dark Mode Toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        const themeToggle = document.getElementById('themeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+        const html = document.documentElement;
+
+        // Check saved theme or prefer color scheme
+        const savedTheme = localStorage.getItem('theme') ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+        if (savedTheme === 'dark') {
+            html.classList.add('dark');
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+
+            if (html.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            } else {
+                localStorage.setItem('theme', 'light');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            }
+        });
+    });
+</script>
+
 <script type="module" src="../js/pages/login.js"></script>
 </body>
 </html>
