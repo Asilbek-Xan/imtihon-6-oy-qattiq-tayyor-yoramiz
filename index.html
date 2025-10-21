@@ -49,6 +49,16 @@
           <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Eng yaxshi mashinalarni kashf eting va ular haqida batafsil ma'lumot oling</p>
         </div>
 
+        <!-- Add Car Button -->
+        <div class="flex justify-end mb-6">
+          <button class="btn btn-success gap-2" onclick="document.getElementById('addCarModal').showModal()">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Mashina qo'shish
+          </button>
+        </div>
+
         <!-- Filters and Search -->
         <div class="flex flex-wrap items-center gap-4 pb-8 justify-between">
           <div class="flex flex-wrap gap-4">
@@ -99,6 +109,88 @@
       </div>
     </section>
 
+    <!-- Add Car Modal -->
+    <dialog id="addCarModal" class="modal">
+      <div class="modal-box dark:bg-gray-800 dark:text-gray-200 max-w-2xl">
+        <h3 class="text-lg font-bold mb-4">Yangi mashina qo'shish</h3>
+        <form id="addCarForm" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="label">
+                <span class="label-text">Mashina nomi</span>
+              </label>
+              <input type="text" name="name" class="input input-bordered w-full dark:bg-gray-700 dark:border-gray-600" placeholder="Mashina nomi" required>
+            </div>
+            <div>
+              <label class="label">
+                <span class="label-text">Trim</span>
+              </label>
+              <input type="text" name="trim" class="input input-bordered w-full dark:bg-gray-700 dark:border-gray-600" placeholder="Trim" required>
+            </div>
+            <div>
+              <label class="label">
+                <span class="label-text">Kategoriya</span>
+              </label>
+              <select name="category" class="select select-bordered w-full dark:bg-gray-700 dark:border-gray-600" required>
+                <option value="" disabled selected>Kategoriya tanlang</option>
+                <option value="Sedan">Sedan</option>
+                <option value="SUV">SUV</option>
+                <option value="Coupe">Coupe</option>
+                <option value="Hatchback">Hatchback</option>
+                <option value="Pickup">Pickup</option>
+              </select>
+            </div>
+            <div>
+              <label class="label">
+                <span class="label-text">Yil</span>
+              </label>
+              <input type="number" name="year" class="input input-bordered w-full dark:bg-gray-700 dark:border-gray-600" placeholder="Yil" min="1900" max="2024" required>
+            </div>
+            <div>
+              <label class="label">
+                <span class="label-text">Maksimal tezlik (km/h)</span>
+              </label>
+              <input type="number" name="maxSpeed" class="input input-bordered w-full dark:bg-gray-700 dark:border-gray-600" placeholder="Tezlik" required>
+            </div>
+            <div>
+              <label class="label">
+                <span class="label-text">O'rindiqlar soni</span>
+              </label>
+              <input type="number" name="seatCount" class="input input-bordered w-full dark:bg-gray-700 dark:border-gray-600" placeholder="O'rindiqlar" min="1" max="20" required>
+            </div>
+            <div>
+              <label class="label">
+                <span class="label-text">Yoqilg'i turi</span>
+              </label>
+              <select name="fuelType" class="select select-bordered w-full dark:bg-gray-700 dark:border-gray-600" required>
+                <option value="" disabled selected>Yoqilg'i turi</option>
+                <option value="Benzin">Benzin</option>
+                <option value="Dizel">Dizel</option>
+                <option value="Elektr">Elektr</option>
+                <option value="Gibrid">Gibrid</option>
+              </select>
+            </div>
+            <div>
+              <label class="label">
+                <span class="label-text">Davlat</span>
+              </label>
+              <input type="text" name="country" class="input input-bordered w-full dark:bg-gray-700 dark:border-gray-600" placeholder="Davlat" required>
+            </div>
+          </div>
+          <div>
+            <label class="label">
+              <span class="label-text">Tavsif</span>
+            </label>
+            <textarea name="description" class="textarea textarea-bordered w-full dark:bg-gray-700 dark:border-gray-600" placeholder="Mashina tavsifi" rows="3"></textarea>
+          </div>
+          <div class="modal-action">
+            <button type="submit" class="btn btn-success">Qo'shish</button>
+            <button type="button" class="btn" onclick="document.getElementById('addCarModal').close()">Bekor qilish</button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+
     <!-- Edit Modal -->
     <dialog id="editModal" class="modal">
       <div class="modal-box dark:bg-gray-800 dark:text-gray-200">
@@ -130,11 +222,10 @@
     <!-- Card Template -->
     <template id="cardTemplate">
       <div
-        class="card bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 transform-gpu animate-fade-in "
-
+        class="card bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 transform-gpu animate-fade-in"
       >
         <div class="card-body">
-          <h2 class="card-title text-lg font-semibold text-indigo-600 dark:text-indigo-400 name card-title text-lg font-semibold text-indigo-600 dark:text-indigo-400 name truncate"></h2>
+          <h2 class="card-title text-lg font-semibold text-indigo-600 dark:text-indigo-400 name truncate"></h2>
           <p class="description text-gray-700 dark:text-gray-300 leading-relaxed text-sm"></p>
           <ul class="space-y-1 text-sm text-gray-600 dark:text-gray-400">
             <li><b>Trim:</b> <span class="trim"></span></li>

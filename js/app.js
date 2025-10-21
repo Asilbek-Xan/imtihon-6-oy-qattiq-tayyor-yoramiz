@@ -1,7 +1,7 @@
 // js/app.js - Asosiy ilova logikasi
 
 import { checkAuth } from "./check-auth.js";
-import { deleteElementLocal, editElementLocal } from "./crud.js";
+import { deleteElementLocal, editElementLocal, addElement } from "./crud.js";
 import { changeLocalData, localData } from "./local-data.js";
 import { getAll, deleteElement, editElement as editElementServer } from "./request.js";
 import { showToast } from "./toast.js";
@@ -95,6 +95,8 @@ const elEditForm = document.getElementById("editForm");
 const elPagination = document.getElementById("pagination");
 const elClearBtn = document.getElementById("clearBtn");
 const elError = document.getElementById("error");
+const elAddCarModal = document.getElementById("addCarModal");
+const elAddCarForm = document.getElementById("addCarForm");
 
 let backendData = null;
 let worker = new Worker("./worker.js");
@@ -165,6 +167,61 @@ function closeDeleteModal() {
   document.getElementById('deleteModal').close();
 }
 
+// Mashina qo'shish formasi
+function initAddCarForm() {
+  if (!elAddCarForm) return;
+
+  elAddCarForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Auth tekshirish
+    if (!checkAuth()) return;
+
+    const formData = new FormData(e.target);
+    const payload = {
+      name: formData.get('name'),
+      trim: formData.get('trim'),
+      category: formData.get('category'),
+      year: parseInt(formData.get('year')),
+      maxSpeed: formData.get('maxSpeed') + ' km/h',
+      seatCount: parseInt(formData.get('seatCount')),
+      fuelType: formData.get('fuelType'),
+      country: formData.get('country'),
+      description: formData.get('description')
+    };
+
+    try {
+      elLoader.classList.remove('hidden');
+      const newCar = await addElement(payload);
+
+      // Yangilash
+      loadData({ limitParam: limit, skipParam: skip, key: filterKey, value: filterValue });
+
+      // Modalni yopish va formani tozalash
+      elAddCarModal.close();
+      e.target.reset();
+
+      showToast('✅ Mashina muvaffaqiyatli qo\'shildi');
+    } catch (error) {
+      showToast(error.message || '❌ Mashina qo\'shishda xatolik');
+    } finally {
+      elLoader.classList.add('hidden');
+    }
+  });
+}
+
+// Mashina qo'shish tugmasi
+function initAddCarButton() {
+  const addCarBtn = document.querySelector('[onclick*="addCarModal"]');
+  if (addCarBtn) {
+    addCarBtn.addEventListener('click', (e) => {
+      if (!checkAuth()) {
+        e.preventDefault();
+      }
+    });
+  }
+}
+
 // Asosiy ilova ishga tushirish
 function initApp() {
   // Dark mode va animatsiyalarni ishga tushirish
@@ -177,6 +234,10 @@ function initApp() {
     location.href = "/pages/login.html";
     return;
   }
+
+  // Mashina qo'shish funksiyalarini ishga tushirish
+  initAddCarForm();
+  initAddCarButton();
 
   // Dastlabki yuklash
   elSkeletonLoader.classList.remove("hidden");
@@ -382,19 +443,9 @@ document.addEventListener("mousedown", (event) => {
 
 document.addEventListener("contextmenu", (e) => e.preventDefault());
 
-// Ilovani ishga tushirish
-window.addEventListener("DOMContentLoaded", initApp);
-
-
-
-
-
-
-
-
-const input = document.getElementById('textInput');
+// Typing sound effect
+const input = document.getElementById('searchInput');
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
 let wasEmpty = true;
 
 function playBeep(duration = 0.12, frequency = 880, volume = 0.1) {
@@ -416,21 +467,19 @@ function playBeep(duration = 0.12, frequency = 880, volume = 0.1) {
 }
 
 // Inputga matn yozilganda
-input.addEventListener('input', () => {
-  const isEmpty = input.value.trim().length === 0;
-  if (wasEmpty && !isEmpty) {
-    if (audioCtx.state === 'suspended') {
-      audioCtx.resume().then(() => playBeep());
-    } else {
-      playBeep();
+if (input) {
+  input.addEventListener('input', () => {
+    const isEmpty = input.value.trim().length === 0;
+    if (wasEmpty && !isEmpty) {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume().then(() => playBeep());
+      } else {
+        playBeep();
+      }
     }
-  }
-  wasEmpty = isEmpty;
-});
+    wasEmpty = isEmpty;
+  });
+}
 
-
-
-
-
-
-
+// Ilovani ishga tushirish
+window.addEventListener("DOMContentLoaded", initApp);
