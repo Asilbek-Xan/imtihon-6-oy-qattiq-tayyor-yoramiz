@@ -12,8 +12,11 @@ async function login(user) {
   });
 
   if (!req.ok) {
-    // Barcha xatolik holatlarida bir xil xabar
-    throw new Error("Parol yoki username noto'g'ri, qayta urunib ko'ring");
+    if (req.status === 405) {
+      throw new Error("Uzur, serverni APIga ulash kerak");
+    } else {
+      throw new Error("Parol yoki username noto'g'ri, qayta urunib ko'ring");
+    }
   }
 
   return await req.json();
@@ -48,4 +51,4 @@ elForm.addEventListener("submit", async (evt) => {
     } catch (error) {
         showToast(`❌ ${error.message}`);
     }
-}); 
+});
