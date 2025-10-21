@@ -1,12 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/output.css">
-    <title>Document</title>
+    <title>Ro'yxatdan o'tish</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
 </head>
-<body>
+<body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center min-h-screen p-4 transition-colors duration-300">
 
+<!-- Theme Toggle Button -->
+<div class="fixed top-6 right-6 z-10">
+    <button id="themeToggle" class="bg-white dark:bg-gray-800 shadow-lg rounded-full p-3 border border-blue-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
+        <i id="sunIcon" class="fas fa-sun text-yellow-500 text-lg"></i>
+        <i id="moonIcon" class="fas fa-moon text-blue-400 text-lg hidden"></i>
+    </button>
+</div>
+
+<div class="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-blue-100 dark:border-gray-700 transition-colors duration-300">
+    <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 dark:from-blue-500 dark:to-blue-700 rounded-full mb-4 shadow-md transition-colors duration-300">
+            <i class="fas fa-user-plus text-white text-xl"></i>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white transition-colors duration-300">Ro'yxatdan o'tish</h1>
+        <p class="text-gray-600 dark:text-gray-300 mt-2 text-sm transition-colors duration-300">Yangi hisob yarating</p>
+    </div>
+
+    <form id="form" class="flex flex-col gap-4">
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-user text-blue-500 dark:text-blue-400 transition-colors duration-300"></i>
+            </div>
+            <input type="text" name="username" id="username" placeholder="Foydalanuvchi nomi:"
+                   class="w-full pl-10 pr-4 py-3 border border-blue-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 focus:border-blue-400 dark:focus:border-blue-500 transition-all duration-300 text-gray-800 dark:text-white dark:bg-gray-700 font-medium bg-blue-50/30 dark:bg-gray-600/30 placeholder-gray-500 dark:placeholder-gray-400">
+        </div>
+
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-envelope text-blue-500 dark:text-blue-400 transition-colors duration-300"></i>
+            </div>
+            <input type="email" name="email" id="email" placeholder="Elektron pochta:"
+                   class="w-full pl-10 pr-4 py-3 border border-blue-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 focus:border-blue-400 dark:focus:border-blue-500 transition-all duration-300 text-gray-800 dark:text-white dark:bg-gray-700 font-medium bg-blue-50/30 dark:bg-gray-600/30 placeholder-gray-500 dark:placeholder-gray-400">
+        </div>
+
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-lock text-blue-500 dark:text-blue-400 transition-colors duration-300"></i>
+            </div>
+            <input type="password" name="password" id="password" placeholder="Parol:"
+                   class="w-full pl-10 pr-4 py-3 border border-blue-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 focus:border-blue-400 dark:focus:border-blue-500 transition-all duration-300 text-gray-800 dark:text-white dark:bg-gray-700 font-medium bg-blue-50/30 dark:bg-gray-600/30 placeholder-gray-500 dark:placeholder-gray-400">
+        </div>
+
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-lock text-blue-500 dark:text-blue-400 transition-colors duration-300"></i>
+            </div>
+            <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Parolni takrorlang:"
+                   class="w-full pl-10 pr-4 py-3 border border-blue-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 focus:border-blue-400 dark:focus:border-blue-500 transition-all duration-300 text-gray-800 dark:text-white dark:bg-gray-700 font-medium bg-blue-50/30 dark:bg-gray-600/30 placeholder-gray-500 dark:placeholder-gray-400">
+        </div>
+
+        <button type="submit" id="submitBtn"
+                class="bg-gradient-to-r from-blue-400 to-blue-500 dark:from-blue-500 dark:to-blue-600 hover:from-blue-500 hover:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-700 text-white font-bold py-3 rounded-lg transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg shadow-md mt-2">
+            Ro'yxatdan o'tish
+        </button>
+    </form>
+
+    <!-- Additional Info -->
+    <div class="mt-6 text-center">
+        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
+            Hisobingiz bormi?
+            <a href="./login.html" class="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 font-medium transition-colors duration-200">
+                Tizimga kiring
+            </a>
+        </p>
+    </div>
+</div>
+
+<script type="module" src="../js/pages/register.js"></script>
 </body>
 </html>
