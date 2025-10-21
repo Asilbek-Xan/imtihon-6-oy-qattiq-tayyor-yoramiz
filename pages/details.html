@@ -1,24 +1,92 @@
 <!DOCTYPE html>
-<html lang="uz" data-theme="cupcake">
+<html lang="uz" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Details</title>
+  <title>Car Details</title>
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* 🔵 Harakatlanadigan neon orblar (background effect) */
+    .orb {
+      position: absolute;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(0,153,255,0.6), rgba(0,0,0,0));
+      filter: blur(80px);
+      animation: moveOrb 15s infinite alternate ease-in-out;
+      z-index: -1;
+    }
+    .orb:nth-child(2) { left: 70%; animation-duration: 18s; }
+    .orb:nth-child(3) { top: 70%; left: 20%; animation-duration: 20s; }
+
+    @keyframes moveOrb {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(100px, -150px); }
+    }
+
+    /* ✅ 3D Hover Card + Glass effect */
+    #carCard {
+      transform-style: preserve-3d;
+      backdrop-filter: blur(15px);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    #carCard:hover {
+      transform: rotateX(5deg) rotateY(-5deg) scale(1.02);
+      box-shadow: 0 25px 40px rgba(0,0,0,0.3);
+    }
+
+    /* 🎆 Neon loading animation */
+    .loader {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(255,255,255,0.2);
+      border-top: 5px solid #2563eb;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ✅ Fade-in animation har bir info qator uchun */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-info p {
+      animation: fadeIn 0.5s ease forwards;
+      opacity: 0;
+    }
+
+    /* 🌈 Neon pulse for color preview */
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 10px rgba(0,150,255,0.5); }
+      50% { box-shadow: 0 0 20px rgba(0,150,255,0.9); }
+    }
+    #colorPreview {
+      animation: pulse 2s infinite;
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center p-6">
 
-  <div id="carCard" class="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-6 transition transform hover:scale-[1.01]">
-    <h1 id="name" class="text-3xl font-bold text-gray-800 mb-3">Yuklanmoqda...</h1>
-    <p id="description" class="text-gray-600 mb-4"></p>
+<body class="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-black flex items-center justify-center overflow-hidden relative">
 
-    <div id="info" class="grid grid-cols-2 gap-4 text-gray-700 text-sm"></div>
+  <!-- 🔵 Neon orblar fon uchun -->
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
+
+  <!-- 🔷 Main Card -->
+  <div id="carCard" class="max-w-2xl w-full bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-8 text-white">
+    <h1 id="name" class="text-4xl font-bold mb-3 drop-shadow-lg">Yuklanmoqda...</h1>
+    <p id="description" class="text-gray-300 mb-6"></p>
+    <div id="info" class="grid grid-cols-2 gap-4 text-gray-200 text-sm"></div>
 
     <div class="mt-6 flex justify-between items-center">
-      <a href="../index.html" class="bg-slate-800 text-white px-4 py-2 rounded-lg hover:bg-slate-700 transition">
-        ⬅ Bosh sahifa
-      </a>
-      <div id="colorPreview" class="w-10 h-10 rounded-full border"></div>
+      <a href="../index.html" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg shadow-lg transition">⬅ Orqaga</a>
+      <div id="colorPreview" class="w-12 h-12 rounded-full border-2 border-white"></div>
     </div>
   </div>
 
