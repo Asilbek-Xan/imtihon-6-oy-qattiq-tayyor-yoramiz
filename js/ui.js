@@ -72,26 +72,55 @@ export function pagination(total, limit, skip) {
         return;
     }
 
-    const remained = total % limit;
     const pageCount = Math.ceil(total / limit);
-    let activePage = Math.floor(skip / limit) + 1;
+    const activePage = Math.floor(skip / limit) + 1;
+
+    // Responsive pagination container
+    const paginationContainer = document.createElement("div");
+    paginationContainer.className = "flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg";
+
+    // Jami ma'lumot
+    const totalInfo = document.createElement("div");
+    totalInfo.className = "flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400";
+    totalInfo.innerHTML = `
+        <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+        </svg>
+        <span class="font-medium">Jami: <span class="text-indigo-600 dark:text-indigo-400 font-bold">${total}</span> ta</span>
+    `;
+
+    // Pagination kontrollerlari
+    const paginationControls = document.createElement("div");
+    paginationControls.className = "flex items-center gap-1 sm:gap-2 flex-wrap justify-center";
 
     // Oldingi sahifa tugmasi
     if (activePage > 1) {
         const prevButton = document.createElement("button");
-        prevButton.classList.add("join-item", "btn", "js-page");
+        prevButton.className = "js-page flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-all duration-300 hover:scale-105 hover:shadow-md border border-indigo-200 dark:border-indigo-700";
         prevButton.innerHTML = `
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
+            <span class="hidden sm:inline">Oldingi</span>
         `;
         prevButton.dataset.skip = (activePage - 2) * limit;
         prevButton.title = "Oldingi sahifa";
-        elPagination.appendChild(prevButton);
+        paginationControls.appendChild(prevButton);
+    } else {
+        const prevButton = document.createElement("button");
+        prevButton.className = "flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 dark:bg-gray-700 rounded-lg cursor-not-allowed opacity-50 border border-gray-200 dark:border-gray-600";
+        prevButton.disabled = true;
+        prevButton.innerHTML = `
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <span class="hidden sm:inline">Oldingi</span>
+        `;
+        paginationControls.appendChild(prevButton);
     }
 
     // Sahifa raqamlari
-    const maxVisiblePages = 5;
+    const maxVisiblePages = window.innerWidth < 640 ? 3 : 5;
     let startPage = Math.max(1, activePage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(pageCount, startPage + maxVisiblePages - 1);
 
@@ -103,78 +132,98 @@ export function pagination(total, limit, skip) {
     // Birinchi sahifa
     if (startPage > 1) {
         const firstButton = document.createElement("button");
-        firstButton.classList.add("join-item", "btn", "js-page");
+        firstButton.className = "js-page px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-300 hover:scale-110";
         firstButton.innerText = "1";
         firstButton.dataset.skip = 0;
-        elPagination.appendChild(firstButton);
+        firstButton.title = "1 - sahifa";
+        paginationControls.appendChild(firstButton);
 
         // Ellipsis
         if (startPage > 2) {
-            const ellipsis = document.createElement("button");
-            ellipsis.classList.add("join-item", "btn", "btn-disabled");
-            ellipsis.innerHTML = "...";
-            ellipsis.disabled = true;
-            elPagination.appendChild(ellipsis);
+            const ellipsis = document.createElement("span");
+            ellipsis.className = "px-2 text-gray-400 text-sm";
+            ellipsis.innerHTML = "•••";
+            paginationControls.appendChild(ellipsis);
         }
     }
 
     // Sahifa raqamlari
     for (let i = startPage; i <= endPage; i++) {
         const button = document.createElement("button");
-        button.classList.add("join-item", "btn", "js-page");
 
         if (activePage === i) {
-            button.classList.add("btn-active");
+            button.className = "js-page px-4 py-2 text-sm font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl";
+        } else {
+            button.className = "js-page px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-300 hover:scale-110";
         }
 
         button.innerText = i;
         button.dataset.skip = (i - 1) * limit;
         button.title = `${i} - sahifa`;
 
-        elPagination.appendChild(button);
+        paginationControls.appendChild(button);
     }
 
     // Oxirgi sahifa
     if (endPage < pageCount) {
         // Ellipsis
         if (endPage < pageCount - 1) {
-            const ellipsis = document.createElement("button");
-            ellipsis.classList.add("join-item", "btn", "btn-disabled");
-            ellipsis.innerHTML = "...";
-            ellipsis.disabled = true;
-            elPagination.appendChild(ellipsis);
+            const ellipsis = document.createElement("span");
+            ellipsis.className = "px-2 text-gray-400 text-sm";
+            ellipsis.innerHTML = "•••";
+            paginationControls.appendChild(ellipsis);
         }
 
         // Oxirgi sahifa
         const lastButton = document.createElement("button");
-        lastButton.classList.add("join-item", "btn", "js-page");
+        lastButton.className = "js-page px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-300 hover:scale-110";
         lastButton.innerText = pageCount;
         lastButton.dataset.skip = (pageCount - 1) * limit;
-        elPagination.appendChild(lastButton);
+        lastButton.title = `${pageCount} - sahifa`;
+        paginationControls.appendChild(lastButton);
     }
 
     // Keyingi sahifa tugmasi
     if (activePage < pageCount) {
         const nextButton = document.createElement("button");
-        nextButton.classList.add("join-item", "btn", "js-page");
+        nextButton.className = "js-page flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-all duration-300 hover:scale-105 hover:shadow-md border border-indigo-200 dark:border-indigo-700";
         nextButton.innerHTML = `
+            <span class="hidden sm:inline">Keyingi</span>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
         `;
         nextButton.dataset.skip = activePage * limit;
         nextButton.title = "Keyingi sahifa";
-        elPagination.appendChild(nextButton);
+        paginationControls.appendChild(nextButton);
+    } else {
+        const nextButton = document.createElement("button");
+        nextButton.className = "flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 dark:bg-gray-700 rounded-lg cursor-not-allowed opacity-50 border border-gray-200 dark:border-gray-600";
+        nextButton.disabled = true;
+        nextButton.innerHTML = `
+            <span class="hidden sm:inline">Keyingi</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+        `;
+        paginationControls.appendChild(nextButton);
     }
 
     // Sahifa ma'lumotlari
     const pageInfo = document.createElement("div");
-    pageInfo.className = "join-item btn btn-disabled text-sm";
+    pageInfo.className = "flex items-center gap-2 text-sm bg-gray-100 dark:bg-gray-700 px-3 sm:px-4 py-2 rounded-full";
     pageInfo.innerHTML = `
-        <span class="hidden sm:inline">Sahifa:</span>
-        ${activePage} / ${pageCount}
+        <span class="text-gray-500 dark:text-gray-400">Sahifa</span>
+        <span class="font-bold text-indigo-600 dark:text-indigo-400">${activePage}</span>
+        <span class="text-gray-400">/</span>
+        <span class="text-gray-600 dark:text-gray-300 font-medium">${pageCount}</span>
     `;
-    elPagination.appendChild(pageInfo);
+
+    // Elementlarni container ga qo'shish
+    paginationContainer.appendChild(totalInfo);
+    paginationContainer.appendChild(paginationControls);
+    paginationContainer.appendChild(pageInfo);
+    elPagination.appendChild(paginationContainer);
 }
 
 // Qo'shimcha: Loading state

@@ -1,5 +1,7 @@
 // js/app.js - Asosiy ilova logikasi
 
+
+
 import { checkAuth } from "./check-auth.js";
 import { deleteElementLocal, editElementLocal, addElement } from "./crud.js";
 import { changeLocalData, localData } from "./local-data.js";
@@ -81,6 +83,17 @@ function createSkeletonLoader() {
 // Asosiy konfiguratsiya
 const limit = 12;
 let skip = 0;
+
+
+
+
+
+
+
+
+
+
+
 
 // DOM elementlari
 const elEditModal = document.getElementById("editModal");
@@ -403,18 +416,28 @@ elEditForm.addEventListener("submit", (evt) => {
     });
 });
 
+// app.js faylida pagination event listenerini yangilang
 elPagination.addEventListener("click", (evt) => {
-  const target = evt.target;
-  if (!target.classList.contains("js-page")) return;
+  const target = evt.target.closest('.js-page');
+  if (!target) return;
+
   let newSkip = Number(target.dataset.skip) || 0;
   if (!backendData || !backendData.total) return showToast("❌ Pagination uchun ma'lumot yo'q");
+
   const totalPages = Math.ceil(backendData.total / limit);
   const pageIndex = Math.floor(newSkip / limit);
+
+  // Cheklovlarni tekshirish
   if (pageIndex < 0) newSkip = 0;
   if (pageIndex >= totalPages) newSkip = (totalPages - 1) * limit;
+
   skip = newSkip;
+
+  // Smooth scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
   loadData({ limitParam: limit, skipParam: skip, key: filterKey, value: filterValue });
-  showToast(`📄 ${pageIndex + 1} - sahifa yuklanmoqda`);
+  // showToast(`📄 ${pageIndex + 1} - sahifa yuklanmoqda`);
 });
 
 // Network holatini kuzatish
@@ -483,3 +506,30 @@ if (input) {
 
 // Ilovani ishga tushirish
 window.addEventListener("DOMContentLoaded", initApp);
+
+
+
+// app.js faylida pagination event listenerini yangilaymiz
+elPagination.addEventListener("click", (evt) => {
+  const target = evt.target.closest('.js-page');
+  if (!target) return;
+
+  let newSkip = Number(target.dataset.skip) || 0;
+  if (!backendData || !backendData.total) return showToast("❌ Pagination uchun ma'lumot yo'q");
+
+  const totalPages = Math.ceil(backendData.total / limit);
+  const pageIndex = Math.floor(newSkip / limit);
+
+  // Cheklovlarni tekshirish
+  if (pageIndex < 0) newSkip = 0;
+  if (pageIndex >= totalPages) newSkip = (totalPages - 1) * limit;
+
+  skip = newSkip;
+
+  // Smooth scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  loadData({ limitParam: limit, skipParam: skip, key: filterKey, value: filterValue });
+  showToast(`📄 ${pageIndex + 1} - sahifa yuklanmoqda`);
+});
+
