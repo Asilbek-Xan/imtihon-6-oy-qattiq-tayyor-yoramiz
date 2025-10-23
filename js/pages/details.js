@@ -42,26 +42,31 @@ function ui(data) {
 
   const infoItems = [];
 
-  if (checkValue(data.trim)) infoItems.push(`<p><b>Model:</b> ${data.trim}</p>`);
-  if (checkValue(data.year)) infoItems.push(`<p><b>Yil:</b> ${data.year}</p>`);
-  if (checkValue(data.generation)) infoItems.push(`<p><b>Avlod:</b> ${data.generation}</p>`);
+  // Har bir maydon uchun "no-data" tekshiruvi
+  infoItems.push(`<p><b>Model:</b> ${checkValue(data.trim) ? data.trim : '<span class="text-gray-500">no-data</span>'}</p>`);
+  infoItems.push(`<p><b>Yil:</b> ${checkValue(data.year) ? data.year : '<span class="text-gray-500">no-data</span>'}</p>`);
+  infoItems.push(`<p><b>Avlod:</b> ${checkValue(data.generation) ? data.generation : '<span class="text-gray-500">no-data</span>'}</p>`);
 
+  // Rang uchun alohida tekshiruv
   if (checkValue(data.colorName) || checkValue(data.color)) {
     const colorText = [];
     if (checkValue(data.colorName)) colorText.push(data.colorName);
     if (checkValue(data.color)) colorText.push(`(${data.color})`);
     infoItems.push(`<p><b>Rangi:</b> ${colorText.join(' ')}</p>`);
+  } else {
+    infoItems.push(`<p><b>Rangi:</b> <span class="text-gray-500">no-data</span></p>`);
   }
 
-  if (checkValue(data.category)) infoItems.push(`<p><b>Tur:</b> ${data.category}</p>`);
-  if (checkValue(data.doorCount)) infoItems.push(`<p><b>Eshiklar:</b> ${data.doorCount}</p>`);
-  if (checkValue(data.seatCount)) infoItems.push(`<p><b>O'rindiqlar:</b> ${data.seatCount}</p>`);
-  if (checkValue(data.maxSpeed)) infoItems.push(`<p><b>Eng tezlik:</b> ${data.maxSpeed}</p>`);
-  if (checkValue(data.acceleration)) infoItems.push(`<p><b>Tezlanish:</b> ${data.acceleration}</p>`);
-  if (checkValue(data.engine)) infoItems.push(`<p><b>Dvigatel:</b> ${data.engine}</p>`);
-  if (checkValue(data.horsepower)) infoItems.push(`<p><b>Ot kuchi:</b> ${data.horsepower}</p>`);
-  if (checkValue(data.fuelType)) infoItems.push(`<p><b>Yoqilg'i turi:</b> ${data.fuelType}</p>`);
+  infoItems.push(`<p><b>Tur:</b> ${checkValue(data.category) ? data.category : '<span class="text-gray-500">no-data</span>'}</p>`);
+  infoItems.push(`<p><b>Eshiklar:</b> ${checkValue(data.doorCount) ? data.doorCount : '<span class="text-gray-500">no-data</span>'}</p>`);
+  infoItems.push(`<p><b>O'rindiqlar:</b> ${checkValue(data.seatCount) ? data.seatCount : '<span class="text-gray-500">no-data</span>'}</p>`);
+  infoItems.push(`<p><b>Eng tezlik:</b> ${checkValue(data.maxSpeed) ? data.maxSpeed : '<span class="text-gray-500">no-data</span>'}</p>`);
+  infoItems.push(`<p><b>Tezlanish:</b> ${checkValue(data.acceleration) ? data.acceleration : '<span class="text-gray-500">no-data</span>'}</p>`);
+  infoItems.push(`<p><b>Dvigatel:</b> ${checkValue(data.engine) ? data.engine : '<span class="text-gray-500">no-data</span>'}</p>`);
+  infoItems.push(`<p><b>Ot kuchi:</b> ${checkValue(data.horsepower) ? data.horsepower : '<span class="text-gray-500">no-data</span>'}</p>`);
+  infoItems.push(`<p><b>Yoqilg'i turi:</b> ${checkValue(data.fuelType) ? data.fuelType : '<span class="text-gray-500">no-data</span>'}</p>`);
 
+  // Yoqilg'i sarfi uchun alohida tekshiruv
   if (data.fuelConsumption) {
     const fuelItems = [];
     if (checkValue(data.fuelConsumption.city)) fuelItems.push(`Shahar: ${data.fuelConsumption.city}`);
@@ -70,16 +75,19 @@ function ui(data) {
 
     if (fuelItems.length > 0) {
       infoItems.push(`<p><b>Yoqilg'i sarfi:</b> ${fuelItems.join(', ')}</p>`);
+    } else {
+      infoItems.push(`<p><b>Yoqilg'i sarfi:</b> <span class="text-gray-500">no-data</span></p>`);
     }
+  } else {
+    infoItems.push(`<p><b>Yoqilg'i sarfi:</b> <span class="text-gray-500">no-data</span></p>`);
   }
 
-  if (checkValue(data.country)) infoItems.push(`<p><b>Ishlab chiqaruvchi:</b> ${data.country}</p>`);
+  infoItems.push(`<p><b>Ishlab chiqaruvchi:</b> ${checkValue(data.country) ? data.country : '<span class="text-gray-500">no-data</span>'}</p>`);
 
-  if (infoItems.length === 0) {
-    elInfo.innerHTML = `<p class="text-gray-500">Bu mashina haqida ma'lumot topilmadi</p>`;
-    return;
-  }
+  // Faqat "Bu mashina haqida ma'lumot topilmadi" xabarini o'chirish
+  // Barcha maydonlar "no-data" bo'lsa ham, ularni ko'rsatish
 
+  // Ma'lumotlarni chiqarish
   infoItems.forEach((item, index) => {
     setTimeout(() => {
       const p = document.createElement("div");
@@ -89,8 +97,11 @@ function ui(data) {
     }, index * 80);
   });
 
+  // Rang preview
   if (checkValue(data.color)) {
     elColor.style.backgroundColor = data.color;
+  } else {
+    elColor.style.backgroundColor = "#f3f4f6"; // default rang
   }
 }
 

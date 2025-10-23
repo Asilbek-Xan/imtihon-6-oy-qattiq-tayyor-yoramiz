@@ -512,5 +512,9 @@ if (input) {
 
 
 
+
+
+
+
 // ===== ILOVANI ISHGA TUSHIRISH =====
 window.addEventListener("DOMContentLoaded", initApp);
