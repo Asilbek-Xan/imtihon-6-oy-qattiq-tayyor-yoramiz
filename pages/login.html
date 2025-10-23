@@ -19,7 +19,6 @@
 </head>
 <body class="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center min-h-screen p-4 theme-transition">
 
-<!-- Theme Toggle Button -->
 <div class="fixed top-6 right-6 z-10">
     <button id="themeToggle" class="bg-white dark:bg-gray-800 shadow-lg rounded-full p-3 border border-amber-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
         <i id="sunIcon" class="fas fa-sun text-amber-500 text-lg"></i>
@@ -59,7 +58,6 @@
         </button>
     </form>
 
-    <!-- Additional Info -->
     <div class="mt-6 text-center">
         <p class="text-sm text-gray-500 dark:text-gray-400 theme-transition">
             Hisobingiz yo'qmi?
@@ -71,14 +69,12 @@
 </div>
 
 <script>
-    // Dark Mode Toggle
     document.addEventListener('DOMContentLoaded', function() {
         const themeToggle = document.getElementById('themeToggle');
         const sunIcon = document.getElementById('sunIcon');
         const moonIcon = document.getElementById('moonIcon');
         const html = document.documentElement;
 
-        // Check saved theme or prefer color scheme
         const savedTheme = localStorage.getItem('theme') ||
             (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 

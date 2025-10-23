@@ -1,6 +1,5 @@
 const baseURL = "https://json-api.uz/api/project/fn44";
 
-// Barcha ma'lumotlarni olish
 export async function getAll(query = "") {
   try {
     const req = await fetch(baseURL + `/cars${query ? query : ""}`);
@@ -12,7 +11,6 @@ export async function getAll(query = "") {
   }
 }
 
-// Element qo'shish
 export async function addElement(newData) {
   try {
     const token = localStorage.getItem("token");
@@ -34,7 +32,6 @@ export async function addElement(newData) {
   }
 }
 
-// Element tahrirlash
 export async function editElement(editedData) {
   try {
     const token = localStorage.getItem("token");
@@ -55,7 +52,6 @@ export async function editElement(editedData) {
   }
 }
 
-// Elementni ID bo'yicha o'chirish
 export async function deleteElement(id) {
   try {
     const token = localStorage.getItem("token");
@@ -72,5 +68,4 @@ export async function deleteElement(id) {
   }
 }
 
-// baseURL ni export qilish CRUD.js uchun
 export { baseURL };

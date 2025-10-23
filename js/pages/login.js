@@ -29,7 +29,6 @@ elForm.addEventListener("submit", async (evt) => {
     const username = formData.get('username')?.trim() || "";
     const password = formData.get('password')?.trim() || "";
 
-    // Validatsiya
     if (!username) {
         showToast("Ismingizni kiriting!");
         return;

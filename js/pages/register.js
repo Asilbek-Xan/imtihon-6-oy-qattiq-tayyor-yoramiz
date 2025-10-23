@@ -21,10 +21,15 @@ async function register(user) {
     }
   }
 
-  return await req.json();
+  const responseData = await req.json();
+
+  if (!responseData.access_token) {
+    throw new Error("Ro'yxatdan o'tish muvaffaqiyatsiz. Token olinmadi.");
+  }
+
+  return responseData;
 }
 
-// Dark Mode Toggle
 document.addEventListener('DOMContentLoaded', function() {
     const themeToggle = document.getElementById('themeToggle');
     const sunIcon = document.getElementById('sunIcon');
@@ -64,7 +69,6 @@ elForm.addEventListener("submit", async (evt) => {
     const password = formData.get('password')?.trim() || "";
     const confirmPassword = formData.get('confirmPassword')?.trim() || "";
 
-    // Validatsiya
     if (!username) {
         showToast("Foydalanuvchi nomini kiriting!");
         return;
@@ -85,7 +89,12 @@ elForm.addEventListener("submit", async (evt) => {
     showToast("⏳ Ro'yxatdan o'tilmoqda...");
 
     try {
-        const res = await register({ username, email, password });
+        const res = await register({
+            username,
+            email,
+            password
+        });
+
         localStorage.setItem("token", res.access_token);
         showToast("✅ Muvaffaqiyatli ro'yxatdan o'tdingiz!");
         setTimeout(() => window.location.href = "../../index.html", 1500);

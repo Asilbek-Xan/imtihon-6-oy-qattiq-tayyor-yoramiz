@@ -1,9 +1,8 @@
 import { changeLocalData, localData } from "./local-data.js";
 import { ui } from "./ui.js";
 import { showToast } from "./toast.js";
-import { baseURL } from "./request.js"; // ✅ baseURL import qilindi
+import { baseURL } from "./request.js";
 
-// Delete element from server and local
 export async function deleteElement(id) {
   const token = localStorage.getItem("token");
   const elLoader = document.getElementById("loader");
@@ -34,7 +33,6 @@ export async function deleteElement(id) {
   }
 }
 
-// Add element to server and local
 export async function addElement(payload) {
   const token = localStorage.getItem("token");
   const elLoader = document.getElementById("loader");
@@ -66,7 +64,6 @@ export async function addElement(payload) {
   }
 }
 
-// Edit element on server and local
 export async function editElementServer(payload) {
   const token = localStorage.getItem("token");
   const elLoader = document.getElementById("loader");
@@ -97,8 +94,6 @@ export async function editElementServer(payload) {
     if (elLoader) elLoader.classList.add("hidden");
   }
 }
-
-// Local funksiyalar
 export function deleteElementLocal(id) {
    const result = localData.filter((el) => el.id != id);
    changeLocalData(result);

@@ -29,3 +29,6 @@ onmessage = (evt) => {
   const result = actions[func](...params);
   postMessage({ target: func, result });
 };
+
+
+

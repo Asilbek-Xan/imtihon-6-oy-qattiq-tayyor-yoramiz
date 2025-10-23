@@ -1,7 +1,3 @@
-// js/app.js - Asosiy ilova logikasi
-
-
-
 import { checkAuth } from "./check-auth.js";
 import { deleteElementLocal, editElementLocal, addElement } from "./crud.js";
 import { changeLocalData, localData } from "./local-data.js";
@@ -9,21 +5,24 @@ import { getAll, deleteElement, editElement as editElementServer } from "./reque
 import { showToast } from "./toast.js";
 import { pagination, ui } from "./ui.js";
 
-// Dark Mode funktsiyalari
+// ===== TEMA SOZLASHI =====
 function initTheme() {
   const themeToggle = document.getElementById('themeToggle');
   const sunIcon = document.getElementById('sunIcon');
   const moonIcon = document.getElementById('moonIcon');
 
+  // LocalStorage yoki brauzer sozlamalaridan temani olish
   const savedTheme = localStorage.getItem('theme') ||
     (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 
+  // Tema qo'llash
   if (savedTheme === 'dark') {
     document.documentElement.classList.add('dark');
     sunIcon.classList.add('hidden');
     moonIcon.classList.remove('hidden');
   }
 
+  // Tema o'zgartirish tugmasi
   themeToggle.addEventListener('click', () => {
     const html = document.documentElement;
     html.classList.toggle('dark');
@@ -40,7 +39,7 @@ function initTheme() {
   });
 }
 
-// Animatsiyalar qo'shish
+// ===== ANIMATSIYALAR =====
 function initAnimations() {
   const style = document.createElement('style');
   style.textContent = `
@@ -55,7 +54,7 @@ function initAnimations() {
   document.head.appendChild(style);
 }
 
-// Skeleton loader yaratish
+// ===== SKELETON LOADER =====
 function createSkeletonLoader() {
   const skeletonLoader = document.getElementById('skeletonLoader');
   const skeletonCount = 12; // 3x4 grid uchun
@@ -80,22 +79,11 @@ function createSkeletonLoader() {
   }
 }
 
-// Asosiy konfiguratsiya
-const limit = 12;
-let skip = 0;
+// ===== ASOSIY KONFIGURATSIYA =====
+const limit = 12; // Bir sahifadagi elementlar soni
+let skip = 0;     // Qancha element o'tkazib yuborilgan
 
-
-
-
-
-
-
-
-
-
-
-
-// DOM elementlari
+// ===== DOM ELEMENTLARI =====
 const elEditModal = document.getElementById("editModal");
 const elOfflinePage = document.getElementById("offlinePage");
 const elFilterTypeSelect = document.getElementById("filterTypeSelect");
@@ -111,19 +99,21 @@ const elError = document.getElementById("error");
 const elAddCarModal = document.getElementById("addCarModal");
 const elAddCarForm = document.getElementById("addCarForm");
 
-let backendData = null;
-let worker = new Worker("./worker.js");
-let filterKey = null;
-let filterValue = null;
-let editedElementId = null;
+// ===== GLOBAL O'ZGARUVCHILAR =====
+let backendData = null;     // Serverdan kelgan ma'lumotlar
+let worker = new Worker("./worker.js"); // Web Worker
+let filterKey = null;       // Filtr turi (masalan: category, fuelType)
+let filterValue = null;     // Filtr qiymati (masalan: SUV, Electric)
+let editedElementId = null; // Tahrirlanayotgan element IDsi
 
+// ===== AUDIO ELEMENTLARI =====
 const offlineSound = new Audio("./sounds/offline.mp3");
 const onlineSound = new Audio("./sounds/online.mp3");
 const leftSound = new Audio("./sounds/left-click.mp3");
 const rightSound = new Audio("./sounds/right-click.mp3");
 const typing = new Audio("./sounds/type.mp3");
 
-// Debounce funktsiyasi
+// ===== DEBOUNCE FUNKSIYASI (QIDIRUVNI OPTIMALLASHTIRISH) =====
 function debounce(fn, wait = 300) {
   let t;
   return (...args) => {
@@ -132,7 +122,7 @@ function debounce(fn, wait = 300) {
   };
 }
 
-// No data xabarini boshqarish
+// ===== MA'LUMOT YO'Q XABARI =====
 function toggleNoDataMessage(data) {
   let elNoData = document.getElementById("noData");
   if (!elNoData) {
@@ -142,6 +132,8 @@ function toggleNoDataMessage(data) {
     elNoData.className = "text-center text-xl text-gray-500 mt-10";
     document.body.appendChild(elNoData);
   }
+
+  // Ma'lumot bor-yo'qligiga qarab UI ni yangilash
   if (data && data.length > 0) {
     elNoData.classList.add("hidden");
     elContainer.classList.remove("hidden");
@@ -153,15 +145,18 @@ function toggleNoDataMessage(data) {
   }
 }
 
-// Ma'lumotlarni yuklash
+// ===== MA'LUMOTLARNI YUKLASH =====
 function loadData({ limitParam = limit, skipParam = skip, key = null, value = null } = {}) {
   elLoader.classList.remove("hidden");
+
+  // URL parametrlarini tayyorlash
   let url = `?limit=${limitParam}&skip=${skipParam}`;
   if (key && value) url = `?${key}=${encodeURIComponent(value)}&limit=${limitParam}&skip=${skipParam}`;
 
   getAll(url)
     .then((res) => {
       if (!res || !res.data) return showToast("❌ Serverdan to'g'ri javob kelmadi");
+
       backendData = res;
       changeLocalData(res.data);
       ui(res.data);
@@ -175,12 +170,12 @@ function loadData({ limitParam = limit, skipParam = skip, key = null, value = nu
     });
 }
 
-// Delete modalni yopish
+// ===== O'CHIRISH MODALINI YOPISH =====
 function closeDeleteModal() {
   document.getElementById('deleteModal').close();
 }
 
-// Mashina qo'shish formasi
+// ===== MASHINA QO'SHISH FORMASI =====
 function initAddCarForm() {
   if (!elAddCarForm) return;
 
@@ -223,7 +218,7 @@ function initAddCarForm() {
   });
 }
 
-// Mashina qo'shish tugmasi
+// ===== MASHINA QO'SHISH TUGMASI =====
 function initAddCarButton() {
   const addCarBtn = document.querySelector('[onclick*="addCarModal"]');
   if (addCarBtn) {
@@ -235,7 +230,7 @@ function initAddCarButton() {
   }
 }
 
-// Asosiy ilova ishga tushirish
+// ===== ASOSIY ILOVA ISHGA TUSHIRISH =====
 function initApp() {
   // Dark mode va animatsiyalarni ishga tushirish
   initTheme();
@@ -255,6 +250,7 @@ function initApp() {
   // Dastlabki yuklash
   elSkeletonLoader.classList.remove("hidden");
 
+  // Offline holatni tekshirish
   if (!navigator.onLine) {
     elOfflinePage.classList.remove("hidden");
     showToast("⚠️ Internet yo'q — offline rejimda ishlayapsiz");
@@ -264,11 +260,12 @@ function initApp() {
   elClearBtn?.classList.add("hidden");
 }
 
-// Worker xabarlarini qayta ishlash
+// ===== WEB WORKER XABARLARINI QAYTA ISHLASH =====
 worker.addEventListener("message", (evt) => {
   const response = evt.data;
   elLoader.classList.add("hidden");
 
+  // Filtr qiymatlarini yuklash
   if (response.target === "filterByType") {
     elFilterValueSelect.innerHTML = "";
     elFilterValueSelect.classList.remove("hidden");
@@ -289,6 +286,7 @@ worker.addEventListener("message", (evt) => {
     showToast("✅ Filter qiymatlari tayyor");
   }
 
+  // Qidiruv natijalari
   if (response.target === "search") {
     if (!response.result || response.result.length === 0) {
       elContainer.innerHTML = "";
@@ -302,7 +300,7 @@ worker.addEventListener("message", (evt) => {
   }
 });
 
-// Event listenerlar
+// ===== FILTR TURINI O'ZGARTIRISH =====
 elFilterTypeSelect.addEventListener("change", (evt) => {
   filterKey = evt.target.value || null;
   if (!backendData) return showToast("❌ Server ma'lumotlari yuklanmagan");
@@ -311,6 +309,7 @@ elFilterTypeSelect.addEventListener("change", (evt) => {
   worker.postMessage({ functionName: "filterByType", params: [backendData.data, filterKey] });
 });
 
+// ===== FILTR QIYMATINI O'ZGARTIRISH =====
 elFilterValueSelect.addEventListener("change", (evt) => {
   filterValue = evt.target.value || null;
   skip = 0;
@@ -319,6 +318,7 @@ elFilterValueSelect.addEventListener("change", (evt) => {
   showToast(`🔎 Filtr qo'llandi: ${filterKey} = ${filterValue}`);
 });
 
+// ===== QIDIRUV (DEBOUNCE BILAN) =====
 const liveSearch = debounce((value) => {
   if (!backendData) return;
   if (!value) {
@@ -340,6 +340,7 @@ elSearchInput.addEventListener("input", (evt) => {
   }
 });
 
+// ===== FILTRLARNI TOZALASH =====
 elClearBtn?.addEventListener("click", () => {
   filterKey = null;
   filterValue = null;
@@ -353,10 +354,12 @@ elClearBtn?.addEventListener("click", () => {
   showToast("🔁 Filterlar va qidiruv tozalandi");
 });
 
+// ===== CONTAINER EVENTLARI (EDIT, DELETE, INFO) =====
 elContainer.addEventListener("click", (evt) => {
   const btn = evt.target.closest("button, a");
   if (!btn) return;
 
+  // Tahrirlash tugmasi
   if (btn.classList.contains("js-edit")) {
     if (!checkAuth()) return (location.href = "/pages/login.html");
     editedElementId = btn.id;
@@ -365,8 +368,10 @@ elContainer.addEventListener("click", (evt) => {
     elEditModal.showModal();
     elEditForm.name.value = found.name || "";
     elEditForm.description.value = found.description || "";
+    elEditForm.maxSpeed.value = found.maxSpeed || "";
   }
 
+  // O'chirish tugmasi
   if (btn.classList.contains("js-delete")) {
     if (!checkAuth()) return (location.href = "/pages/login.html");
     const id = btn.id;
@@ -387,6 +392,7 @@ elContainer.addEventListener("click", (evt) => {
     };
   }
 
+  // Ma'lumot tugmasi
   if (btn.classList.contains("js-info")) {
     const id = btn.id || btn.getAttribute("data-id");
     if (!id) return showToast("❗ Element ID mavjud emas");
@@ -394,6 +400,7 @@ elContainer.addEventListener("click", (evt) => {
   }
 });
 
+// ===== TAHRIRLASH FORMASI =====
 elEditForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
   if (!editedElementId) return showToast("❗ Element tanlanmagan");
@@ -416,7 +423,7 @@ elEditForm.addEventListener("submit", (evt) => {
     });
 });
 
-// app.js faylida pagination event listenerini yangilang
+// ===== PAGINATION =====
 elPagination.addEventListener("click", (evt) => {
   const target = evt.target.closest('.js-page');
   if (!target) return;
@@ -437,10 +444,9 @@ elPagination.addEventListener("click", (evt) => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   loadData({ limitParam: limit, skipParam: skip, key: filterKey, value: filterValue });
-  // showToast(`📄 ${pageIndex + 1} - sahifa yuklanmoqda`);
 });
 
-// Network holatini kuzatish
+// ===== NETWORK HOLATINI KUZATISH =====
 window.addEventListener("online", () => {
   elOfflinePage.classList.add("hidden");
   onlineSound.play();
@@ -453,7 +459,7 @@ window.addEventListener("offline", () => {
   showToast("⚠️ Internet uzildi — offline rejim");
 });
 
-// Audio effektlar
+// ===== AUDIO EFFEKTlARI =====
 document.addEventListener("mousedown", (event) => {
   if (event.button === 0) {
     leftSound.currentTime = 0;
@@ -466,7 +472,7 @@ document.addEventListener("mousedown", (event) => {
 
 document.addEventListener("contextmenu", (e) => e.preventDefault());
 
-// Typing sound effect
+// ===== TYPING SOUND EFFECT =====
 const input = document.getElementById('searchInput');
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let wasEmpty = true;
@@ -504,32 +510,7 @@ if (input) {
   });
 }
 
-// Ilovani ishga tushirish
+
+
+// ===== ILOVANI ISHGA TUSHIRISH =====
 window.addEventListener("DOMContentLoaded", initApp);
-
-
-
-// app.js faylida pagination event listenerini yangilaymiz
-elPagination.addEventListener("click", (evt) => {
-  const target = evt.target.closest('.js-page');
-  if (!target) return;
-
-  let newSkip = Number(target.dataset.skip) || 0;
-  if (!backendData || !backendData.total) return showToast("❌ Pagination uchun ma'lumot yo'q");
-
-  const totalPages = Math.ceil(backendData.total / limit);
-  const pageIndex = Math.floor(newSkip / limit);
-
-  // Cheklovlarni tekshirish
-  if (pageIndex < 0) newSkip = 0;
-  if (pageIndex >= totalPages) newSkip = (totalPages - 1) * limit;
-
-  skip = newSkip;
-
-  // Smooth scroll to top
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  loadData({ limitParam: limit, skipParam: skip, key: filterKey, value: filterValue });
-  showToast(`📄 ${pageIndex + 1} - sahifa yuklanmoqda`);
-});
-
